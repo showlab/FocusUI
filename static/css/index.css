@@ -1,0 +1,308 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+/* Make the OCUS substring smaller in the FOCUSUI wordmark */
+.ocus {
+  font-size: 0.85em;
+}
+
+/* POSPAD shrink spans */
+.pospad-os,
+.pospad-ad {
+  font-size: 0.85em;
+}
+
+
+.footer .icon-link {
+    font-size: 25px;
+    color: #000;
+}
+
+.link-block a {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.teaser {
+  font-family: 'Google Sans', sans-serif;
+}
+
+
+.publication-title {
+}
+
+.publication-banner {
+  max-height: parent;
+
+}
+
+.publication-banner video {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  object-fit: fit;
+}
+
+.publication-header .hero-body {
+}
+
+.publication-title {
+    font-family: 'Google Sans', sans-serif;
+}
+
+/* Icon before title */
+.title-icon {
+  height: 1.2em;
+  width: auto;
+  margin-right: 0.4rem;
+  vertical-align: -0.2em;
+}
+
+/* Hover-swap image (changes on mouse hover) */
+.hover-swap {
+  position: relative;
+  display: block;
+  width: 80%;
+  margin: 0.25rem auto 0rem;
+}
+.hover-swap img {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+/* Three-stage hover cycle: screen -> saliency -> focus */
+.hover-cycle { position: relative; }
+.hover-cycle img.layer { display: block; width: 100%; border-radius: 8px; border: 1px solid #e5e7eb; }
+.hover-cycle img.layer.saliency,
+.hover-cycle img.layer.focus {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: opacity;
+}
+
+@keyframes hs-screen-out {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes hs-saliency-cycle {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes hs-focus-in {
+  0% { opacity: 0; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.hover-cycle:hover .layer.screen { animation: hs-screen-out 1.5s ease forwards; }
+.hover-cycle:hover .layer.saliency { animation: hs-saliency-cycle 1.5s ease forwards; }
+.hover-cycle:hover .layer.focus { animation: hs-focus-in 1.5s ease forwards; }
+
+/* Tighter section spacing for hover-swap block */
+.section-tight { padding-top: 0.5rem; }
+
+/* Two-in-a-row hover swap layout overrides */
+.hover-row .hover-swap { width: 100%; }
+/* Remove extra vertical gap from columns wrapper */
+.hover-row { margin-top: 0.15rem; margin-bottom: 0rem; }
+.hover-row > .column { padding-top: 0rem; padding-bottom: 0rem; }
+
+/* Grid-based hover panel (redo) */
+.hover-grid {
+  width: 80%;
+  margin: 0.1rem auto 0; /* minimal separation without large spacing */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+.hover-grid .cell { position: relative; overflow: hidden; }
+.hover-grid .cell img { display: block; width: 100%; border-radius: 8px; border: 1px solid #e5e7eb; }
+.hover-grid figcaption { margin-top: 0.05rem; }
+
+/* Hover caption style */
+.hover-caption {
+  text-align: center;
+  color: #6b7280; /* gray-500 */
+  font-size: 0.95rem;
+  margin-top: 0rem;
+}
+/* If a caption block precedes the hover grid, add a tiny gap below it */
+.hover-caption + .hover-grid { margin-top: 0.12rem; }
+
+/* Lead text above hover grid */
+.hover-lead {
+  text-align: left;
+  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1.4;
+  /* Align with the hover visuals (80% centered), and use half width (~one figure) */
+  max-width: 100%;
+  margin-left: 0%;
+  margin-right: auto;
+  padding-bottom: 0.12rem; /* minimal gap without looking cramped */
+  position: relative;
+  z-index: 2;
+}
+
+.publication-authors {
+    font-family: 'Google Sans', sans-serif;
+}
+
+.publication-venue {
+    color: #555;
+    width: fit-content;
+    font-weight: bold;
+}
+
+.publication-awards {
+    color: #ff3860;
+    width: fit-content;
+    font-weight: bolder;
+}
+
+.publication-authors {
+}
+
+.publication-authors a {
+   color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+    text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-banner img {
+}
+
+.publication-authors {
+  /*color: #4286f4;*/
+}
+
+/* Removed unused template styles: publication-video, results-carousel, interpolation */
+
+/* Performance tables (scoped styling inspired by GUI-Actor) */
+#perf-tables table {
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  margin: 10px 0;
+  width: 100%;
+  font-size: 0.75em; /* match efficiency tables */
+}
+#perf-tables th, #perf-tables td {
+  border: 1px solid #aaa;
+  padding: 4px 4px;
+  text-align: center;
+}
+#perf-tables thead th {
+  background-color: #f2f2f2;
+}
+#perf-tables tr.highlight {
+  /* no-op: legacy; specific ratio classes used below */
+}
+#perf-tables td.avg-col, #perf-tables th.avg-col {
+  background-color: #FBECDD; /* niceorange */
+}
+/* FocusUI row backgrounds (LaTeX colors) */
+#perf-tables tr.ratio-hundred { background-color: #D3E2F2; }
+#perf-tables tr.ratio-fifty   { background-color: #E7F0F8; }
+#perf-tables tr.ratio-thirty  { background-color: #F2F7FB; }
+/* In FocusUI rows, ensure Avg column uses the row's blue (override orange) */
+#perf-tables tr.ratio-hundred td.avg-col { background-color: #D3E2F2; }
+#perf-tables tr.ratio-fifty   td.avg-col { background-color: #E7F0F8; }
+#perf-tables tr.ratio-thirty  td.avg-col { background-color: #F2F7FB; }
+#perf-tables caption {
+  caption-side: bottom;
+  text-align: left;
+  font-size: 0.9em;
+  padding-top: 8px;
+}
+
+/* Figure captions */
+.image figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #6b7280; /* gray-500 */
+  text-align: center;
+}
+
+/* Query-Guided stack: tighter vertical spacing */
+.qgvt-stack .image { margin: 0; }
+.qgvt-stack .image + .image { margin-top: 0.5rem; }
+
+/* Reusable table styling (same as perf-tables) */
+.table-like table {
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  margin: 10px 0;
+  width: 100%;
+}
+.table-like th, .table-like td {
+  border: 1px solid #aaa;
+  padding: 4px 4px;
+  text-align: center;
+}
+.table-like thead th {
+  background-color: #f2f2f2;
+}
+.table-like tr.ratio-hundred { background-color: #D3E2F2; }
+.table-like tr.ratio-fifty   { background-color: #E7F0F8; }
+.table-like tr.ratio-thirty  { background-color: #F2F7FB; }
+.table-like td.avg-col, .table-like th.avg-col { background-color: #FBECDD; }
+.table-like tr.ratio-hundred td.avg-col { background-color: #D3E2F2; }
+.table-like tr.ratio-fifty   td.avg-col { background-color: #E7F0F8; }
+.table-like tr.ratio-thirty  td.avg-col { background-color: #F2F7FB; }
+.table-like tr.row-muted { color: #9CA3AF; }
+.table-like caption {
+  caption-side: bottom;
+  text-align: left;
+  font-size: 0.9em;
+  padding-top: 8px;
+}
+
+.table-compact table { font-size: 0.75em; }
+.table-scroll { overflow-x: auto; }
+
+/* Reduce column horizontal padding for side-by-side tables */
+.tight-cols > .column { padding-left: 0.25rem; padding-right: 0.25rem; }
+
+/* Performance layout: left wide, right stacked */
+.columns.perf-row {
+  align-items: flex-start;
+}
+.columns.perf-row .column.perf-left {
+  flex: 0 0 63.64%;
+  max-width: 63.64%;
+}
+.columns.perf-row .column.perf-right {
+  flex: 0 0 36.36%;
+  max-width: 36.36%;
+}
+.columns.perf-row .column.perf-right figure.image + figure.image {
+  margin-top: 0.75rem;
+}
+@media (max-width: 768px) {
+  .columns.perf-row .column.perf-left,
+  .columns.perf-row .column.perf-right { flex: 0 0 100%; max-width: 100%; }
+}

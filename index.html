@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="FOCUSUI: Efficient UI grounding via position-preserving visual token selection.">
+  <meta name="keywords" content="FOCUSUI, UI grounding, VLM, visual tokens, POSPAD">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FOCUSUI: Efficient UI Grounding via Position-Preserving Visual Token Selection</title>
+  <meta property="og:title" content="FOCUSUI: Efficient UI Grounding via Position-Preserving Visual Token Selection">
+  <meta property="og:description" content="Efficient UI grounding via Query-Guided token selection and position-preserving POSPAD.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://focusui.github.io/static/figures/web/1a-teaser@2x.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" type="image/png" href="./static/images/favicon.png">
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-menu is-active">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="#">
+        <span class="icon"><i class="fas fa-home"></i></span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            <img src="./static/images/focusui_icon.png" alt="FOCUSUI icon" class="title-icon"/>
+            FOCUSUI: Efficient UI Grounding via Position-Preserving Visual Token Selection
+          </h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><span>Mingyu Ouyang</span><sup>1</sup>,</span>
+            <span class="author-block"><span>Kevin Qinghong Lin</span><sup>2</sup>,</span>
+            <span class="author-block"><span>Mike Zheng Shou</span><sup>1</sup><sup>†</sup>,</span>
+            <span class="author-block"><span>Hwee Tou Ng</span><sup>1</sup><sup>†</sup></span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>National University of Singapore</span>
+            <span class="author-block"><sup>2</sup>University of Oxford</span>
+          </div>
+          <div class="is-size-6 has-text-grey has-text-centered" style="margin-top: 4px;">
+            <span>† Corresponding authors</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="./static/paper/_arXiv_version__FocusUI__Efficient_UI_Grounding_via_Position_Preserving_Visual_Token_Selection.pdf" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper (PDF)</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-robot"></i></span>
+                  <span>HuggingFace Model</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-database"></i></span>
+                  <span>HuggingFace Dataset</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#BibTeX" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-quote-right"></i></span>
+                  <span>BibTeX</span>
+                </a>
+              </span>
+            </div>
+          </div>
+
+          <!-- Teaser figure from the paper -->
+          <figure class="image" style="margin-top: 1rem;">
+            <picture>
+              <source type="image/webp" srcset="./static/figures/web/1a-teaser@2x.webp">
+              <source type="image/png" srcset="./static/figures/web/1a-teaser@2x.png">
+              <img src="./static/figures/web/1a-teaser@2x.png" alt="Teaser: FOCUSUI selects instruction-relevant visual tokens while preserving positional continuity via POSPAD." style="max-width:90%; display:block; margin:0 auto; border-radius: 8px; border: 1px solid #e5e7eb;"/>
+            </picture>
+            <figcaption>
+              Comparison of vanilla UI grounding VLMs, VLMs with visual token pruning, and our <strong>FOCUSUI</strong>.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Hover-swap image between teaser and abstract -->
+<section class="section section-tight" aria-label="Hover Swap Visual">
+  <div class="container is-max-desktop">
+    <div class="hover-caption">
+      <p class="hover-lead">
+        <strong>Key Motivation:</strong>
+        <br>
+        Modern user interfaces (UIs) are high‑resolution and compositionally structured, with large homogeneous panes interspersed with small interactive widgets, yet humans naturally only <strong>focus</strong> on regions of interest when interacting with UI.
+        <br>
+        <strong>🔍 Hover over the images below to see how FOCUSUI views and prioritizes different regions of the interface.</strong>
+      </p>
+    </div>
+    <div class="columns tight-cols hover-row">
+      <div class="column is-6">
+        <figure class="image hover-swap hover-cycle">
+          <img class="layer screen" src="./static/figures/hover_animate/1_screen.png" alt="screen" loading="lazy"/>
+          <img class="layer saliency" src="./static/figures/hover_animate/1_saliency.png" alt="saliency" loading="lazy"/>
+          <img class="layer focus" src="./static/figures/hover_animate/1_focus.png" alt="focus" loading="lazy"/>
+        </figure>
+      </div>
+      <div class="column is-6">
+        <figure class="image hover-swap hover-cycle">
+          <img class="layer screen" src="./static/figures/hover_animate/2_screen.png" alt="screen" loading="lazy"/>
+          <img class="layer saliency" src="./static/figures/hover_animate/2_saliency.png" alt="saliency" loading="lazy"/>
+          <img class="layer focus" src="./static/figures/hover_animate/2_focus.png" alt="focus" loading="lazy"/>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Vision-Language Models (VLMs) have shown remarkable performance in User Interface (UI) grounding tasks, driven by their ability to process increasingly high-resolution screenshots.
+            However, screenshots are tokenized into thousands of visual tokens (e.g., about 4700 for 2K resolution), incurring significant computational overhead and diluting attention.
+            In contrast, humans typically <strong>focus</strong> on regions of interest when interacting with UI.
+          </p>
+          <p>
+            In this work, we pioneer the task of efficient UI grounding. Guided by practical analysis of the task’s characteristics and challenges, we propose FOCUSUI, an efficient UI grounding framework that selects patches most relevant to the instruction, while preserving positional continuity for precise grounding.
+          </p>
+          <p>
+            <strong>(1) Eliminating redundant tokens in visual encoding.</strong>
+            We construct patch-level supervision by fusing an instruction-conditioned and a rule-based UI-graph score that down-weights large homogeneous regions to select distinct and instruction-relevant visual tokens.
+          </p>
+          <p>
+            <strong>(2) Preserving positional continuity during visual token selection.</strong>
+            We find that general visual token pruning methods suffer from severe accuracy degradation on UI grounding tasks due to breaking positional information. We introduce a novel POSPAD strategy, which compresses each contiguous sequence of dropped visual tokens into a single special marker placed at the sequence’s last index to preserve positional continuity.
+          </p>
+          <p>
+            Comprehensive experiments on four grounding benchmarks demonstrate that FOCUSUI surpasses GUI-specific baselines. On the ScreenSpot-Pro benchmark, FOCUSUI-7B achieves performance improvement of 3.7% over GUI-Actor-7B. Also, even with only <strong>30%</strong> visual token retention, the performance of FOCUSUI-7B only drops by 3.2%, while achieving up to <strong>1.44×</strong> faster inference and <strong>17%</strong> lower peak GPU memory.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">FOCUSUI: Overview of Efficient UI Grounding Framework</h2>
+    <!-- Row 1: full width pipeline figure -->
+    <div class="columns is-centered">
+      <div class="column is-12">
+        <figure class="image">
+          <picture>
+            <source type="image/webp" srcset="./static/figures/web/2-focusui@2x.webp">
+            <source type="image/png" srcset="./static/figures/web/2-focusui@2x.png">
+            <img src="./static/figures/web/2-focusui@2x.png" alt="FOCUSUI overview: pipeline with Query-Guided selection and position-preserving transform.">
+          </picture>
+          <figcaption class="has-text-left">
+            <strong>Overview of our proposed FOCUSUI</strong>: (a) Illustration of how the Instruction-to-Patch saliency score is constructed. (b) Query-guided
+            Saliency Scorer and token selection. (c) Overall UI grounding framework illustrating how POSPAD is applied to dropped sequences
+            to preserve positional continuity.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+    <h3 class="title is-4 has-text-centered" style="margin-top: 1rem; margin-bottom: 1.5rem;">Key Components: Instruction-to-Patch Saliency Score and POSPAD Transformation</h3>
+    <!-- Row 2: half width columns -->
+    <div class="columns">
+      <div class="column is-6">
+        <figure class="image">
+          <picture>
+            <source type="image/webp" srcset="./static/figures/web/3-ins2patch-score@2x.webp">
+            <source type="image/png" srcset="./static/figures/web/3-ins2patch-score@2x.png">
+            <img src="./static/figures/web/3-ins2patch-score@2x.png" alt="Instruction-to-patch scoring.">
+          </picture>
+          <figcaption class="has-text-left">
+            <strong>Build Instruction-to-patch saliency scorings</strong> for visual token selection: highlighting instruction-conditioned regions fused with a rule-based UI graph to down-weight homogeneous regions.
+          </figcaption>
+        </figure>
+      </div>
+      <div class="column is-6">
+        <figure class="image">
+          <picture>
+            <source type="image/webp" srcset="./static/figures/web/4-pospad@2x.webp">
+            <source type="image/png" srcset="./static/figures/web/4-pospad@2x.png">
+            <img src="./static/figures/web/4-pospad@2x.png" alt="POSPAD: position-preserving compression of dropped token runs.">
+          </picture>
+          <figcaption class="has-text-left">
+            <strong>POSPAD sequence transform</strong>: each contiguous sequence of dropped tokens is replaced with a single marker at the last index to preserve positional continuity.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Main Results</h2>
+    <p>
+      We present performance comparisons on ScreenSpot-V2, ScreenSpot-Pro, OS-World-G, and UI-Vision benchmarks. We test a series of retention ratios r ∈ {100%, 50%, 30%} to characterize degradation curves and compare to dense baselines that consume all visual tokens.
+    </p>
+    <p>
+      Across all four benchmarks, FOCUSUI exceeds GUI-specific baselines with the same size even at 30 − 50% token retention, achieving state-of-the-art grounding performance.
+    </p>
+    <div class="columns perf-row">
+      <div class="column perf-left">
+        <figure class="image">
+          <picture>
+            <source type="image/webp" srcset="./static/figures/web/1c-vs-pruning@2x.webp">
+            <source type="image/png" srcset="./static/figures/web/1c-vs-pruning@2x.png">
+            <img src="./static/figures/web/1c-vs-pruning@2x.png" alt="FOCUSUI vs. general visual token pruning methods.">
+          </picture>
+          <figcaption class="has-text-left">
+            Comparison with pruning: FOCUSUI maintains accuracy under high token reduction, while general visual token pruning methods suffer from sharp performance drop.
+          </figcaption>
+        </figure>
+      </div>
+      <div class="column perf-right">
+        <figure class="image">
+          <div class="image">
+            <picture>
+              <source type="image/webp" srcset="./static/figures/web/supp-2b-pruning_ssv2@2x.webp">
+              <source type="image/png" srcset="./static/figures/web/supp-2b-pruning_ssv2@2x.png">
+              <img src="./static/figures/web/supp-2b-pruning_ssv2@2x.png" alt="ScreenSpot-V2 pruning study.">
+              <source type="image/webp" srcset="./static/figures/web/supp-2a-pruning_sspro@2x.webp">
+              <source type="image/png" srcset="./static/figures/web/supp-2a-pruning_sspro@2x.png">
+              <img src="./static/figures/web/supp-2a-pruning_sspro@2x.png" alt="ScreenSpot-Pro pruning study.">
+            </picture>
+          </div>
+          <div class="image" style="margin-top: 0.75rem;">
+          </div>
+          <figcaption>
+            Accuracy vs. visual token reduction.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+    <details class="is-size-5" style="margin-top: 1rem;">
+      <summary>Performance on ScreenSpot-V2, ScreenSpot-Pro, OS-World-G and UI-Vision</summary>
+      <div class="content" id="perf-tables">
+        <!-- ScreenSpot-V2 -->
+        <h3 class="title is-4" style="margin-top:0.5rem;">ScreenSpot-V2</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Mobile-Text</th>
+              <th>Mobile-Icon</th>
+              <th>Desktop-Text</th>
+              <th>Desktop-Icon</th>
+              <th>Web-Text</th>
+              <th>Web-Icon</th>
+              <th class="avg-col">Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Operator</td><td>47.3</td><td>41.5</td><td>90.2</td><td>80.3</td><td>92.8</td><td>84.3</td><td class="avg-col">70.5</td></tr>
+            <tr><td>OS-Atlas-7B</td><td>95.2</td><td>75.8</td><td>90.7</td><td>63.6</td><td>90.6</td><td>77.3</td><td class="avg-col">84.1</td></tr>
+            <tr><td>Aguvis-7B</td><td>95.5</td><td>77.3</td><td>95.4</td><td>77.9</td><td>91.0</td><td>72.4</td><td class="avg-col">86.0</td></tr>
+            <tr><td>Tong-UI-7B</td><td>93.1</td><td>81.5</td><td>96.4</td><td>82.9</td><td>90.2</td><td>84.7</td><td class="avg-col">88.7</td></tr>
+            <tr><td>UGround-V1-7B</td><td>95.0</td><td>83.3</td><td>95.0</td><td>77.8</td><td>92.1</td><td>77.2</td><td class="avg-col">87.6</td></tr>
+            <tr><td>UI-TARS-7B</td><td>96.9</td><td>89.1</td><td>95.4</td><td>85.0</td><td>93.6</td><td>85.2</td><td class="avg-col">91.6</td></tr>
+            <tr><td>UI-TARS-72B</td><td>94.8</td><td>86.3</td><td>91.2</td><td>87.9</td><td>91.5</td><td>87.7</td><td class="avg-col">90.3</td></tr>
+            <tr><td>UI-TARS-1.5-7B</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="avg-col">90.0</td></tr>
+            <tr><td>Qwen2.5-VL-3B</td><td>93.4</td><td>73.5</td><td>88.1</td><td>58.6</td><td>88.0</td><td>71.4</td><td class="avg-col">80.9</td></tr>
+            <tr><td>Qwen2.5-VL-7B</td><td>97.6</td><td>87.2</td><td>90.2</td><td>74.2</td><td>93.2</td><td>81.3</td><td class="avg-col">88.8</td></tr>
+            <tr><td>Qwen2.5-VL-32B</td><td>97.9</td><td>88.2</td><td>98.5</td><td>79.3</td><td>91.2</td><td>86.2</td><td class="avg-col">91.3</td></tr>
+            <tr><td>GUI-Actor-3B</td><td>97.6</td><td>83.4</td><td>96.9</td><td>83.6</td><td>94.0</td><td>85.7</td><td class="avg-col">91.0</td></tr>
+            <tr><td>GUI-Actor-7B</td><td>97.6</td><td>88.2</td><td>96.9</td><td>85.7</td><td>93.2</td><td>86.7</td><td class="avg-col">92.1</td></tr>
+            <tr><td>Jedi-3B</td><td>96.6</td><td>81.5</td><td>96.9</td><td>78.6</td><td>88.5</td><td>83.7</td><td class="avg-col">88.6</td></tr>
+            <tr><td>Jedi-7B</td><td>96.9</td><td>87.2</td><td>95.9</td><td>87.9</td><td>94.4</td><td>84.2</td><td class="avg-col">91.7</td></tr>
+            <tr class="ratio-hundred"><td style="font-weight:600;">FOCUSUI-3B (r=100%)</td><td>99.2</td><td>85.9</td><td>96.1</td><td>87.3</td><td>95.4</td><td>81.9</td><td class="avg-col">91.5</td></tr>
+            <tr class="ratio-fifty"><td style="font-weight:600;">FOCUSUI-3B (r=50%)</td><td>98.8</td><td>86.9</td><td>95.0</td><td>87.3</td><td>95.4</td><td>81.9</td><td class="avg-col">91.4</td></tr>
+            <tr class="ratio-thirty"><td style="font-weight:600;">FOCUSUI-3B (r=30%)</td><td>98.5</td><td>85.3</td><td>96.1</td><td>87.3</td><td>94.3</td><td>81.9</td><td class="avg-col">91.0</td></tr>
+            <tr class="ratio-hundred"><td style="font-weight:600;">FOCUSUI-7B (r=100%)</td><td>98.8</td><td>91.6</td><td>95.6</td><td>92.1</td><td>95.0</td><td>84.4</td><td class="avg-col">93.1</td></tr>
+            <tr class="ratio-fifty"><td style="font-weight:600;">FOCUSUI-7B (r=50%)</td><td>98.8</td><td>92.2</td><td>93.9</td><td>87.3</td><td>95.0</td><td>85.2</td><td class="avg-col">92.6</td></tr>
+            <tr class="ratio-thirty"><td style="font-weight:600;">FOCUSUI-7B (r=30%)</td><td>98.8</td><td>90.1</td><td>93.3</td><td>85.7</td><td>93.9</td><td>85.2</td><td class="avg-col">91.8</td></tr>
+          </tbody>
+        </table>
+
+        <!-- ScreenSpot-Pro -->
+        <h3 class="title is-4" style="margin-top:1.25rem;">ScreenSpot-Pro</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Dev</th>
+              <th>Creative</th>
+              <th>CAD</th>
+              <th>Scientific</th>
+              <th>Office</th>
+              <th>OS</th>
+              <th>Avg-Text</th>
+              <th>Avg-Icon</th>
+              <th class="avg-col">Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Operator</td><td>35.1</td><td>39.6</td><td>16.1</td><td>43.7</td><td>53.0</td><td>32.7</td><td>45.0</td><td>23.0</td><td class="avg-col">36.6</td></tr>
+            <tr><td>OS-Atlas-7B</td><td>17.7</td><td>17.9</td><td>10.3</td><td>24.4</td><td>27.4</td><td>16.8</td><td>28.1</td><td>4.0</td><td class="avg-col">18.9</td></tr>
+            <tr><td>Aguvis-7B</td><td>16.1</td><td>21.4</td><td>13.8</td><td>34.6</td><td>34.3</td><td>19.4</td><td>-</td><td>-</td><td class="avg-col">22.9</td></tr>
+            <tr><td>Tong-UI-7B</td><td>22.7</td><td>21.1</td><td>15.3</td><td>34.3</td><td>38.3</td><td>18.4</td><td>35.1</td><td>8.0</td><td class="avg-col">25.7</td></tr>
+            <tr><td>UGround-V1-7B</td><td>28.1</td><td>31.7</td><td>14.6</td><td>39.0</td><td>49.6</td><td>24.5</td><td>-</td><td>-</td><td class="avg-col">31.1</td></tr>
+            <tr><td>UI-TARS-7B</td><td>36.1</td><td>32.8</td><td>18.0</td><td>50.0</td><td>53.5</td><td>24.5</td><td>47.8</td><td>16.2</td><td class="avg-col">35.7</td></tr>
+            <tr><td>UI-TARS-72B</td><td>40.8</td><td>39.6</td><td>17.2</td><td>45.7</td><td>54.8</td><td>30.1</td><td>50.9</td><td>17.5</td><td class="avg-col">38.1</td></tr>
+            <tr><td>UI-TARS-1.5-7B</td><td>31.8</td><td>40.2</td><td>31.8</td><td>47.2</td><td>65.6</td><td>33.2</td><td>-</td><td>-</td><td class="avg-col">42.6</td></tr>
+            <tr><td>Qwen2.5-VL-3B</td><td>21.4</td><td>25.8</td><td>18.4</td><td>29.5</td><td>40.9</td><td>20.4</td><td>37.8</td><td>6.6</td><td class="avg-col">25.9</td></tr>
+            <tr><td>Qwen2.5-VL-7B</td><td>29.1</td><td>24.9</td><td>13.8</td><td>31.1</td><td>45.7</td><td>22.4</td><td>39.9</td><td>7.6</td><td class="avg-col">27.6</td></tr>
+            <tr><td>Qwen2.5-VL-32B</td><td>48.5</td><td>41.1</td><td>32.6</td><td>57.1</td><td>67.4</td><td>42.3</td><td>63.2</td><td>22.5</td><td class="avg-col">47.6</td></tr>
+            <tr><td>GUI-Actor-3B</td><td>39.8</td><td>36.7</td><td>34.1</td><td>49.6</td><td>61.3</td><td>35.2</td><td>-</td><td>-</td><td class="avg-col">42.2</td></tr>
+            <tr><td>GUI-Actor-7B</td><td>38.1</td><td>41.4</td><td>38.3</td><td>50.8</td><td>63.0</td><td>38.8</td><td>-</td><td>-</td><td class="avg-col">44.6</td></tr>
+            <tr><td>Jedi-3B</td><td>38.1</td><td>34.6</td><td>23</td><td>38.6</td><td>57.0</td><td>25.0</td><td>49.8</td><td>13.7</td><td class="avg-col">36.1</td></tr>
+            <tr><td>Jedi-7B</td><td>27.4</td><td>34.0</td><td>32.2</td><td>52.4</td><td>68.7</td><td>26.0</td><td>52.6</td><td>18.2</td><td class="avg-col">39.5</td></tr>
+            <tr class="ratio-hundred"><td style="font-weight:600;">FOCUSUI-3B (r=100%)</td><td>43.1</td><td>37.0</td><td>37.6</td><td>48.4</td><td>61.7</td><td>38.3</td><td>59.3</td><td>18.9</td><td class="avg-col">43.8</td></tr>
+            <tr class="ratio-fifty"><td style="font-weight:600;">FOCUSUI-3B (r=50%)</td><td>42.1</td><td>37.0</td><td>36.4</td><td>46.9</td><td>58.3</td><td>35.2</td><td>56.7</td><td>19.0</td><td class="avg-col">42.3</td></tr>
+            <tr class="ratio-thirty"><td style="font-weight:600;">FOCUSUI-3B (r=30%)</td><td>38.1</td><td>35.8</td><td>33.3</td><td>44.5</td><td>57.8</td><td>37.2</td><td>55.0</td><td>17.4</td><td class="avg-col">40.6</td></tr>
+            <tr class="ratio-hundred"><td style="font-weight:600;">FOCUSUI-7B (r=100%)</td><td>44.5</td><td>41.1</td><td>42.9</td><td>52.0</td><td>69.6</td><td>44.4</td><td>64.7</td><td>21.9</td><td class="avg-col">48.3</td></tr>
+            <tr class="ratio-fifty"><td style="font-weight:600;">FOCUSUI-7B (r=50%)</td><td>42.8</td><td>40.5</td><td>40.2</td><td>51.6</td><td>67.0</td><td>40.3</td><td>61.7</td><td>21.9</td><td class="avg-col">46.5</td></tr>
+            <tr class="ratio-thirty"><td style="font-weight:600;">FOCUSUI-7B (r=30%)</td><td>38.8</td><td>39.9</td><td>42.9</td><td>49.2</td><td>64.4</td><td>38.8</td><td>60.4</td><td>20.4</td><td class="avg-col">45.1</td></tr>
+          </tbody>
+        </table>
+
+        <!-- UI-Vision -->
+        <h3 class="title is-4" style="margin-top:1.25rem;">UI-Vision</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Basic</th>
+              <th>Functional</th>
+              <th>Spatial</th>
+              <th class="avg-col">Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Claude-3.7-Sonnet</td><td>9.48</td><td>7.73</td><td>7.60</td><td class="avg-col">8.27</td></tr>
+            <tr><td>ShowUI-2B</td><td>8.07</td><td>7.67</td><td>2.07</td><td class="avg-col">5.94</td></tr>
+            <tr><td>OSAtlas-7B</td><td>12.2</td><td>11.2</td><td>3.67</td><td class="avg-col">9.02</td></tr>
+            <tr><td>UGround-7B</td><td>11.5</td><td>12.2</td><td>2.79</td><td class="avg-col">8.83</td></tr>
+            <tr><td>UGround-V1-7B</td><td>15.4</td><td>17.1</td><td>6.25</td><td class="avg-col">12.9</td></tr>
+            <tr><td>Aguvis-7B</td><td>17.8</td><td>18.3</td><td>5.06</td><td class="avg-col">13.7</td></tr>
+            <tr><td>UI-TARS-7B</td><td>20.1</td><td>24.3</td><td>8.37</td><td class="avg-col">17.6</td></tr>
+            <tr><td>UI-TARS-72B</td><td>31.4</td><td>30.5</td><td>14.7</td><td class="avg-col">25.5</td></tr>
+            <tr><td>GUI-Actor-3B</td><td>27.4</td><td>24.6</td><td>7.0</td><td class="avg-col">19.3</td></tr>
+            <tr><td>GUI-Actor-7B</td><td>30.1</td><td>28.1</td><td>7.8</td><td class="avg-col">21.6</td></tr>
+            <tr><td>Jedi-3B</td><td>22.3</td><td>25.2</td><td>9.35</td><td class="avg-col">18.7</td></tr>
+            <tr><td>Jedi-7B</td><td>32.3</td><td>30.5</td><td>12.8</td><td class="avg-col">24.8</td></tr>
+            <tr class="ratio-hundred"><td style="font-weight:600;">FOCUSUI-3B (r=100%)</td><td>30.0</td><td>26.9</td><td>8.7</td><td class="avg-col">21.5</td></tr>
+            <tr class="ratio-fifty"><td style="font-weight:600;">FOCUSUI-3B (r=50%)</td><td>29.7</td><td>26.0</td><td>8.2</td><td class="avg-col">20.9</td></tr>
+            <tr class="ratio-thirty"><td style="font-weight:600;">FOCUSUI-3B (r=30%)</td><td>29.1</td><td>26.4</td><td>7.6</td><td class="avg-col">20.6</td></tr>
+            <tr class="ratio-hundred"><td style="font-weight:600;">FOCUSUI-7B (r=100%)</td><td>33.6</td><td>31.2</td><td>11.2</td><td class="avg-col">24.9</td></tr>
+            <tr class="ratio-fifty"><td style="font-weight:600;">FOCUSUI-7B (r=50%)</td><td>32.5</td><td>31.0</td><td>11.3</td><td class="avg-col">24.5</td></tr>
+            <tr class="ratio-thirty"><td style="font-weight:600;">FOCUSUI-7B (r=30%)</td><td>32.3</td><td>29.2</td><td>11.0</td><td class="avg-col">23.8</td></tr>
+          </tbody>
+          <caption>Performance comparison on UI-Vision.</caption>
+        </table>
+
+        <!-- OSWorld-G -->
+        <h3 class="title is-4" style="margin-top:1.25rem;">OSWorld-G</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Text</th>
+              <th>Elem</th>
+              <th>Layout</th>
+              <th>Manip</th>
+              <th>Refuse</th>
+              <th class="avg-col">Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Gemini-2.5-Pro</td><td>59.8</td><td>45.5</td><td>49.0</td><td>33.6</td><td>38.9</td><td class="avg-col">45.2</td></tr>
+            <tr><td>Operator</td><td>51.3</td><td>42.4</td><td>46.6</td><td>31.5</td><td>0.0</td><td class="avg-col">40.6</td></tr>
+            <tr><td>UGround-V1-7B</td><td>51.3</td><td>40.3</td><td>43.5</td><td>24.8</td><td>0.0</td><td class="avg-col">36.4</td></tr>
+            <tr><td>Aguvis-7B</td><td>55.9</td><td>41.2</td><td>43.9</td><td>28.2</td><td>0.0</td><td class="avg-col">38.7</td></tr>
+            <tr><td>UI-TARS-7B</td><td>60.2</td><td>51.8</td><td>54.9</td><td>35.6</td><td>0.0</td><td class="avg-col">47.5</td></tr>
+            <tr><td>UI-TARS-1.5-7B</td><td>70.1</td><td>57.9</td><td>59.7</td><td>51.7</td><td>0.0</td><td class="avg-col">56.0</td></tr>
+            <tr><td>Qwen2.5-VL-3B</td><td>41.4</td><td>28.8</td><td>34.8</td><td>13.4</td><td>0.0</td><td class="avg-col">27.3</td></tr>
+            <tr><td>Qwen2.5-VL-7B</td><td>45.6</td><td>32.7</td><td>41.9</td><td>18.1</td><td>0.0</td><td class="avg-col">31.4</td></tr>
+            <tr><td>GUI-Actor-3B</td><td>60.5</td><td>56.1</td><td>58.5</td><td>32.2</td><td>0.0</td><td class="avg-col">50.5</td></tr>
+            <tr><td>GUI-Actor-7B</td><td>60.2</td><td>54.2</td><td>58.1</td><td>30.9</td><td>0.0</td><td class="avg-col">49.5</td></tr>
+            <tr><td>Jedi-3B</td><td>67.4</td><td>53.0</td><td>53.8</td><td>44.3</td><td>7.4</td><td class="avg-col">50.9</td></tr>
+            <tr><td>Jedi-7B</td><td>65.9</td><td>55.5</td><td>57.7</td><td>46.9</td><td>7.4</td><td class="avg-col">54.1</td></tr>
+            <tr class="ratio-hundred"><td style="font-weight:600;">FOCUSUI-3B (r=100%)</td><td>65.9</td><td>57.6</td><td>59.7</td><td>37.6</td><td>0.0</td><td class="avg-col">53.4</td></tr>
+            <tr class="ratio-fifty"><td style="font-weight:600;">FOCUSUI-3B (r=50%)</td><td>64.8</td><td>59.4</td><td>63.6</td><td>37.6</td><td>0.0</td><td class="avg-col">54.6</td></tr>
+            <tr class="ratio-thirty"><td style="font-weight:600;">FOCUSUI-3B (r=30%)</td><td>62.5</td><td>56.7</td><td>62.9</td><td>33.6</td><td>0.0</td><td class="avg-col">51.8</td></tr>
+            <tr class="ratio-hundred"><td style="font-weight:600;">FOCUSUI-7B (r=100%)</td><td>63.6</td><td>61.2</td><td>63.6</td><td>34.9</td><td>0.0</td><td class="avg-col">54.4</td></tr>
+            <tr class="ratio-fifty"><td style="font-weight:600;">FOCUSUI-7B (r=50%)</td><td>64.0</td><td>62.1</td><td>63.6</td><td>31.5</td><td>0.0</td><td class="avg-col">54.1</td></tr>
+            <tr class="ratio-thirty"><td style="font-weight:600;">FOCUSUI-7B (r=30%)</td><td>63.6</td><td>60.9</td><td>64.4</td><td>31.5</td><td>0.0</td><td class="avg-col">53.9</td></tr>
+          </tbody>
+          <caption>Performance comparison on OSWorld-G.</caption>
+        </table>
+        
+        <!-- Qwen3-VL Models -->
+        <h3 class="title is-4" style="margin-top:1.25rem;">Qwen3-VL Backbone Models</h3>
+        <table>
+          <thead>
+            <tr>
+              <th rowspan="2">Model</th>
+              <th colspan="3">ScreenSpot-V2</th>
+              <th colspan="3">ScreenSpot-Pro</th>
+            </tr>
+            <tr>
+              <th>Avg-Text</th><th>Avg-Icon</th><th class="avg-col">Avg</th>
+              <th>Avg-Text</th><th>Avg-Icon</th><th class="avg-col">Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Qwen3-VL-2B†</td><td>94.7</td><td>78.9</td><td class="avg-col">87.8</td><td>52.8</td><td>16.7</td><td class="avg-col">39.0</td></tr>
+            <tr class="ratio-hundred"><td style="font-weight:600;">FOCUSUI-2B (r=100%)</td><td>95.8</td><td>85.6</td><td class="avg-col">91.4</td><td>51.5</td><td>20.9</td><td class="avg-col">39.8</td></tr>
+            <tr class="ratio-fifty"><td style="font-weight:600;">FOCUSUI-2B (r=50%)</td><td>95.7</td><td>85.0</td><td class="avg-col">91.0</td><td>52.5</td><td>20.9</td><td class="avg-col">40.4</td></tr>
+            <tr class="ratio-thirty"><td style="font-weight:600;">FOCUSUI-2B (r=30%)</td><td>93.5</td><td>84.3</td><td class="avg-col">89.5</td><td>49.7</td><td>20.2</td><td class="avg-col">38.5</td></tr>
+          </tbody>
+          <caption>† Evaluated from the official HuggingFace model.</caption>
+        </table>
+
+
+      </div>
+    </details>
+
+    <!-- Pruning Comparison (toggle) -->
+    <details class="is-size-5" style="margin-top: 1rem;">
+      <summary>Comparison to General Visual Token Pruning Methods</summary>
+      <div class="table-like table-compact table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Model + Pruning Method (Venue)</th>
+              <th>%Ret. Ratio</th>
+              <th>SS‑V2 Avg</th>
+              <th>SS‑Pro Avg</th>
+              <th>OSWorld‑G Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Qwen2.5‑VL‑3B</td><td>100%</td><td>81.5</td><td>26.1</td><td>27.3</td></tr>
+            <tr><td>&nbsp;&nbsp; + Fast‑V (ECCV'24)</td><td>30%</td><td>38.6 <small>(‑52.7%)</small></td><td>4.8 <small>(‑81.6%)</small></td><td>14.4 <small>(‑47.4%)</small></td></tr>
+            <tr><td>&nbsp;&nbsp; + HiPrune (arXiv'25)</td><td>30%</td><td>72.0 <small>(‑11.7%)</small></td><td>18.0 <small>(‑30.8%)</small></td><td>20.4 <small>(‑25.3%)</small></td></tr>
+            <tr><td>&nbsp;&nbsp; + Vision‑Zip (CVPR'25)</td><td>30%</td><td>75.4 <small>(‑7.5%)</small></td><td>18.9 <small>(‑27.4%)</small></td><td>23.0 <small>(‑15.6%)</small></td></tr>
+            <tr><td>Jedi‑3B</td><td>100%</td><td>88.9</td><td>36.1</td><td>48.8</td></tr>
+            <tr><td>&nbsp;&nbsp; + Fast‑V (ECCV'24)</td><td>30%</td><td>51.0 <small>(‑42.6%)</small></td><td>14.1 <small>(‑60.9%)</small></td><td>23.9 <small>(‑51.0%)</small></td></tr>
+            <tr><td>&nbsp;&nbsp; + HiPrune (arXiv'25)</td><td>30%</td><td>80.9 <small>(‑9.0%)</small></td><td>26.2 <small>(‑27.3%)</small></td><td>40.4 <small>(‑17.1%)</small></td></tr>
+            <tr><td>&nbsp;&nbsp; + Vision‑Zip (CVPR'25)</td><td>30%</td><td>82.8 <small>(‑6.9%)</small></td><td>28.8 <small>(‑20.3%)</small></td><td>41.5 <small>(‑14.9%)</small></td></tr>
+            <tr class="ratio-hundred"><td><strong>FOCUSUI‑3B</strong></td><td>100%</td><td>91.5</td><td>43.8</td><td>53.4</td></tr>
+            <tr class="ratio-thirty"><td>&nbsp;&nbsp; + Saliency Scorer w/ POSPAD</td><td>30%</td><td>91.0 <small>(‑0.5%)</small></td><td>40.6 <small>(‑7.3%)</small></td><td>51.8 <small>(‑3.0%)</small></td></tr>
+          </tbody>
+          <caption>Comparison against general visual token pruning methods at 30% retention. Numbers in parentheses show drop relative to the 100% baseline.</caption>
+        </table>
+      </div>
+    </details>
+
+    <details class="is-size-5" style="margin-top: 1rem;">
+      <summary>Efficiency Analysis</summary>
+      <p class="is-size-6">
+        Efficiency analysis on ScreenSpot-Pro benchmark under different retention ratios and model backbones of FOCUSUI.
+      </p>
+      <div class="columns tight-cols">
+        <div class="column is-6">
+          <div class="table-like table-compact table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th colspan="5" class="has-text-left">FOCUSUI‑7B (Base: Qwen2.5‑VL, max_pixel=6400×28×28)</th>
+                </tr>
+                <tr>
+                  <th>%Ret.</th>
+                  <th>#Vis. Token</th>
+                  <th>Time (sec)</th>
+                  <th>Max GPU Mem (MB)</th>
+                  <th>SS‑Pro Acc</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="ratio-hundred"><td>100%</td><td>5319</td><td>1.75 (1.00×)</td><td>20994 (1.00×)</td><td>48.3</td></tr>
+                <tr class="ratio-fifty"><td>70%</td><td>3989</td><td>1.67 (1.05×)</td><td>18334 (0.87×)</td><td>47.7</td></tr>
+                <tr class="ratio-fifty"><td>50%</td><td>2659</td><td>1.49 (1.18×)</td><td>17944 (0.85×)</td><td>46.5</td></tr>
+                <tr class="ratio-thirty"><td>30%</td><td>1329</td><td>1.22 (1.44×)</td><td>17392 (0.83×)</td><td>45.1</td></tr>
+              </tbody>
+              <!-- <caption>ScreenSpot‑Pro efficiency. POSPAD tokens excluded from token count.</caption> -->
+            </table>
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="table-like table-compact table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th colspan="5" class="has-text-left">FOCUSUI‑2B (Base: Qwen3‑VL, max_pixel=6000×32×32)</th>
+                </tr>
+                <tr>
+                  <th>%Ret.</th>
+                  <th>#Vis. Token</th>
+                  <th>Time (sec)</th>
+                  <th>Max GPU Mem (MB)</th>
+                  <th>SS‑Pro Acc</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="ratio-hundred"><td>100%</td><td>4627</td><td>0.97 (1.00×)</td><td>6278 (1.00×)</td><td>39.8</td></tr>
+                <tr class="ratio-fifty"><td>70%</td><td>3470</td><td>0.90 (1.08×)</td><td>6142 (0.98×)</td><td>40.1</td></tr>
+                <tr class="ratio-fifty"><td>50%</td><td>2313</td><td>0.85 (1.14×)</td><td>5680 (0.91×)</td><td>40.4</td></tr>
+                <tr class="ratio-thirty"><td>30%</td><td>1156</td><td>0.71 (1.37×)</td><td>5170 (0.82×)</td><td>38.5</td></tr>
+              </tbody>
+              <!-- <caption>ScreenSpot‑Pro efficiency. POSPAD tokens excluded from token count.</caption> -->
+            </table>
+          </div>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h3 class="title is-4 has-text-centered">Predicted Per-Patch Saliency Score for Structured UI interfaces</h3>
+    <figure class="image qgvt-stack">
+      <div class="image">
+        <picture>
+          <source type="image/webp" srcset="./static/figures/web/5-sailency@2x.webp">
+          <source type="image/png" srcset="./static/figures/web/5-sailency@2x.png">
+          <img src="./static/figures/web/5-sailency@2x.png" alt="Saliency maps and qualitative results.">
+        </picture>
+      </div>
+      <div class="image">
+        <picture>
+          <source type="image/webp" srcset="./static/figures/web/supp-3-sail_1@2x.webp">
+          <source type="image/png" srcset="./static/figures/web/supp-3-sail_1@2x.png">
+          <img src="./static/figures/web/supp-3-sail_1@2x.png" alt="query-guided visual token selection example 1.">
+        </picture>
+      </div>
+      <div class="image">
+        <picture>
+          <source type="image/webp" srcset="./static/figures/web/supp-3-sail_2@2x.webp">
+          <source type="image/png" srcset="./static/figures/web/supp-3-sail_2@2x.png">
+          <img src="./static/figures/web/supp-3-sail_2@2x.png" alt="query-guided visual token selection example 2.">
+        </picture>
+      </div>
+      <figcaption class="has-text-left">
+        Qualitative visualization of <strong>predicted saliency heatmaps</strong> and <strong>retained patches under a retention ratio r = 30%</strong> . Black regions denote dropped visual tokens that are not consumed by the LM during decoding. Examples are taken from the ScreenSpot-V2, ScreenSpot-Pro, OS-World-G and UI-Vision benchmarks, spanning web, desktop, and mobile interfaces.
+      </figcaption>
+    </figure>
+  </div>
+  
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{ouyang2025focusui,
+  title   = {FOCUSUI: Efficient UI Grounding via Position-Preserving Visual Token Selection},
+  author  = {Ouyang, Mingyu and Lin, Kevin Qinghong and Shou, Mike Zheng and Ng, Hwee Tou},
+  year    = {2025},
+  journal = {arXiv preprint},
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <!-- <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="./static/paper/focusui.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/focusui/focusui.github.io" class="external-link">
+        <i class="fab fa-github"></i>
+      </a>
+    </div> -->
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a> and is based on the Nerfies website template.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Replace all visible occurrences of "FOCUSUI" with F<span class="ocus">OCUS</span>UI
+  (function() {
+    function replaceFocusInNode(node) {
+      const text = node.nodeValue;
+      const idx = text.indexOf('FOCUSUI');
+      if (idx === -1) return;
+      const frag = document.createDocumentFragment();
+      let lastIndex = 0;
+      while (true) {
+        const i = text.indexOf('FOCUSUI', lastIndex);
+        if (i === -1) break;
+        if (i > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, i)));
+        // Build F<span class="ocus">OCUS</span>UI
+        frag.appendChild(document.createTextNode('F'));
+        const span = document.createElement('span');
+        span.className = 'ocus';
+        span.textContent = 'OCUS';
+        frag.appendChild(span);
+        frag.appendChild(document.createTextNode('UI'));
+        lastIndex = i + 'FOCUSUI'.length;
+      }
+      if (lastIndex < text.length) {
+        frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+      }
+      node.parentNode.replaceChild(frag, node);
+    }
+
+    function walkFocus(root) {
+      const walker = document.createTreeWalker(
+        root,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: function(n) {
+            const p = n.parentNode;
+            if (!p) return NodeFilter.FILTER_REJECT;
+            const tag = p.nodeName;
+            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT' || tag === 'CODE' || tag === 'PRE' || tag === 'TITLE') {
+              return NodeFilter.FILTER_REJECT;
+            }
+            return n.nodeValue && n.nodeValue.indexOf('FOCUSUI') !== -1 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+          }
+        }
+      );
+      const toChange = [];
+      while (walker.nextNode()) {
+        toChange.push(walker.currentNode);
+      }
+      toChange.forEach(replaceFocusInNode);
+    }
+
+    // Replace all visible occurrences of "POSPAD" with P<span class="pospad-os">OS</span>P<span class="pospad-ad">AD</span>
+    function replacePospadInNode(node) {
+      const text = node.nodeValue;
+      const idx = text.indexOf('POSPAD');
+      if (idx === -1) return;
+      const frag = document.createDocumentFragment();
+      let lastIndex = 0;
+      while (true) {
+        const i = text.indexOf('POSPAD', lastIndex);
+        if (i === -1) break;
+        if (i > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, i)));
+        // Build P<span class="pospad-os">OS</span>P<span class="pospad-ad">AD</span>
+        frag.appendChild(document.createTextNode('P'));
+        const os = document.createElement('span');
+        os.className = 'pospad-os';
+        os.textContent = 'OS';
+        frag.appendChild(os);
+        frag.appendChild(document.createTextNode('P'));
+        const ad = document.createElement('span');
+        ad.className = 'pospad-ad';
+        ad.textContent = 'AD';
+        frag.appendChild(ad);
+        lastIndex = i + 'POSPAD'.length;
+      }
+      if (lastIndex < text.length) {
+        frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+      }
+      node.parentNode.replaceChild(frag, node);
+    }
+
+    function walkPospad(root) {
+      const walker = document.createTreeWalker(
+        root,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: function(n) {
+            const p = n.parentNode;
+            if (!p) return NodeFilter.FILTER_REJECT;
+            const tag = p.nodeName;
+            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT' || tag === 'CODE' || tag === 'PRE' || tag === 'TITLE') {
+              return NodeFilter.FILTER_REJECT;
+            }
+            return n.nodeValue && n.nodeValue.indexOf('POSPAD') !== -1 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+          }
+        }
+      );
+      const toChange = [];
+      while (walker.nextNode()) {
+        toChange.push(walker.currentNode);
+      }
+      toChange.forEach(replacePospadInNode);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() { 
+        walkFocus(document.body);
+        walkPospad(document.body);
+      });
+    } else {
+      walkFocus(document.body);
+      walkPospad(document.body);
+    }
+  })();
+</script>
+
+</body>
+</html>
