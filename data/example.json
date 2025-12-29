@@ -1,0 +1,44 @@
+[
+    {
+        "image": "1c6422e3-8eea-44db-9d70-67e74920ae02.png",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image> Submit an application to develop and list an app."
+            },
+            {
+                "from": "gpt",
+                "value": "pyautogui.click(x=0.1835, y=0.7955)",
+                "recipient": "os",
+                "end_turn": true,
+                "bbox_gt": [
+                    0.098,
+                    0.762,
+                    0.269,
+                    0.829
+                ]
+            }
+        ]
+    },
+    {
+        "image": "efd8dacc-ebd0-4164-9ea9-b4458e1b128d.png",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image> Read more about the machine learning engineer's profile - Abhimanyu Veer Aditya"
+            },
+            {
+                "from": "gpt",
+                "value": "pyautogui.click(x=0.2830, y=0.9005)",
+                "recipient": "os",
+                "end_turn": true,
+                "bbox_gt": [
+                    0.262,
+                    0.891,
+                    0.304,
+                    0.91
+                ]
+            }
+        ]
+    }
+]

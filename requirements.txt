@@ -1,0 +1,11 @@
+torch
+transformers
+datasets
+accelerate
+deepspeed
+pillow
+numpy
+tqdm
+pyyaml
+liger-kernel
+qwen-vl-utils

@@ -1,0 +1,19 @@
+datasets:
+  - json_path: datasets/GUI_Actor_Data_OmniParser_Filtered/guiact_bbox_omni_0_3_filtered.json
+    images_folder: datasets/GUI-Actor-Data/GUIAct/web_imgs
+    sampling_strategy: "all"
+  - json_path: datasets/GUI_Actor_Data_OmniParser_Filtered/guienv_bbox_omni_0_3_filtered.json
+    images_folder: datasets/GUI-Actor-Data/guienvs/images
+    sampling_strategy: "all"
+  - json_path: datasets/GUI_Actor_Data_OmniParser_Filtered/wave_ui_bbox_omni_0_3_filtered.json
+    images_folder: datasets/GUI-Actor-Data/Wave-UI/images_fixed/
+    sampling_strategy: "all"
+  - json_path: datasets/GUI_Actor_Data_OmniParser_Filtered/androidcontrol_bbox_omni_0_3_filtered.json
+    images_folder: datasets/GUI-Actor-Data/AndroidControl/tfrecord/images
+    sampling_strategy: "all"
+  - json_path: datasets/GUI_Actor_Data_OmniParser_Filtered/amex_bbox_omni_0_3_filtered.json
+    images_folder: datasets/GUI-Actor-Data/AMEX/screenshot
+    sampling_strategy: "all"
+  - json_path: datasets/GUI_Actor_Data_OmniParser_Filtered/uground_bbox_omni_0_3_filtered.json
+    images_folder: datasets/GUI-Actor-Data/UGround-V1-Data-Box/images
+    sampling_strategy: "all"
