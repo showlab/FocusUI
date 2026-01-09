@@ -15,7 +15,7 @@
   <a href="https://huggingface.co/datasets/">
     <img src="https://img.shields.io/badge/HuggingFace-Dataset-blue.svg" alt="Dataset">
   </a>
-  <a href="https://focusui.github.io">
+  <a href="https://showlab.github.io/FocusUI/">
     <img src="https://img.shields.io/badge/Project-Page-green.svg" alt="Project Page">
   </a>
 </p>
