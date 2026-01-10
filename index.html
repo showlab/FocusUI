@@ -9,7 +9,7 @@
   <meta property="og:title" content="FOCUSUI: Efficient UI Grounding via Position-Preserving Visual Token Selection">
   <meta property="og:description" content="Efficient UI grounding via Query-Guided token selection and position-preserving POSPAD.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://focusui.github.io/static/figures/web/1a-teaser@2x.png">
+  <meta property="og:image" content="https://focusui.github.io/static/figures/web/1a-teaser-gif.gif">
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/bulma.min.css">
@@ -57,27 +57,27 @@
           <div class="column has-text-centered">
             <div class="publication-links">
               <span class="link-block">
-                <a href="./static/paper/_arXiv_version__FocusUI__Efficient_UI_Grounding_via_Position_Preserving_Visual_Token_Selection.pdf" class="external-link button is-normal is-rounded is-dark">
+                <a href="https://arxiv.org/abs/2601.03928" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fas fa-file-pdf"></i></span>
                   <span>Paper (PDF)</span>
                 </a>
               </span>
               <span class="link-block">
-                <a href="" class="external-link button is-normal is-rounded is-dark">
+                <a href="https://github.com/showlab/FocusUI" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fab fa-github"></i></span>
                   <span>Code</span>
                 </a>
               </span>
               <span class="link-block">
-                <a href="" class="external-link button is-normal is-rounded is-dark">
+                <a href="https://huggingface.co/yyyang/FocusUI-3B" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fas fa-robot"></i></span>
-                  <span>HuggingFace Model</span>
+                  <span>HF Model</span>
                 </a>
               </span>
               <span class="link-block">
-                <a href="" class="external-link button is-normal is-rounded is-dark">
+                <a href="https://huggingface.co/datasets/yyyang/FocusUI-Training-Data" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fas fa-database"></i></span>
-                  <span>HuggingFace Dataset</span>
+                  <span>HF Dataset</span>
                 </a>
               </span>
               <span class="link-block">
@@ -89,13 +89,13 @@
             </div>
           </div>
 
+          <p class="is-size-6 has-text-grey" style="margin-top: 8px;">
+          <strong>TL;DR:</strong> FOCUSUI teaches VLMs where to look in UI screenshots.
+          </p>
+
           <!-- Teaser figure from the paper -->
           <figure class="image" style="margin-top: 1rem;">
-            <picture>
-              <source type="image/webp" srcset="./static/figures/web/1a-teaser@2x.webp">
-              <source type="image/png" srcset="./static/figures/web/1a-teaser@2x.png">
-              <img src="./static/figures/web/1a-teaser@2x.png" alt="Teaser: FOCUSUI selects instruction-relevant visual tokens while preserving positional continuity via POSPAD." style="max-width:90%; display:block; margin:0 auto; border-radius: 8px; border: 1px solid #e5e7eb;"/>
-            </picture>
+            <img src="./static/figures/web/1a-teaser-gif.gif" alt="Teaser: FOCUSUI selects instruction-relevant visual tokens while preserving positional continuity via POSPAD." style="max-width:90%; display:block; margin:0 auto; border-radius: 8px; border: 1px solid #e5e7eb;"/>
             <figcaption>
               Comparison of vanilla UI grounding VLMs, VLMs with visual token pruning, and our <strong>FOCUSUI</strong>.
             </figcaption>
@@ -573,11 +573,11 @@
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
-    <pre><code>@article{ouyang2025focusui,
-  title   = {FOCUSUI: Efficient UI Grounding via Position-Preserving Visual Token Selection},
-  author  = {Ouyang, Mingyu and Lin, Kevin Qinghong and Shou, Mike Zheng and Ng, Hwee Tou},
-  year    = {2025},
-  journal = {arXiv preprint},
+    <pre><code>@article{ouyang2026focusui,
+  title={FocusUI: Efficient UI Grounding via Position-Preserving Visual Token Selection},
+  author={Ouyang, Mingyu and Lin, Kevin Qinghong and Shou, Mike Zheng and Ng, Hwee Tou},
+  journal={arXiv preprint arXiv:2601.03928},
+  year={2026}
 }</code></pre>
   </div>
 </section>
