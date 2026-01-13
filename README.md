@@ -6,7 +6,7 @@
 **TL;DR:** Find a smart way to watch screenshot for VLM.
 
 <p align="center">
-  <a href="https://arxiv.org/abs/">
+  <a href="https://arxiv.org/abs/2601.03928">
     <img src="https://img.shields.io/badge/arXiv-Paper-red.svg" alt="arXiv">
   </a>
   <a href="https://huggingface.co/collections/">
