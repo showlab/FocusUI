@@ -2,8 +2,8 @@
 <img src="assets/figures/banner.png?raw=true" width="90%" style="margin-bottom: 10px;">
 <hr>
 </div>
-
-**TL;DR**: FocusUI teaches VLMs where to look in UI screenshots.
+ 
+**TL;DR**: FocusUI teaches VLMs where to look in UI screenshots. 🔍
 
 <p align="center">
   <a href="https://arxiv.org/abs/2601.03928">
@@ -45,7 +45,7 @@ Vision-Language Models (VLMs) have shown remarkable performance in UI grounding 
 
 ## Updates 📣
 
-- [2026/02/08] 🤗 [Models](), [dataset]() and [benchmarks]() are available on HuggingFace.
+- [2026/02/08] 🤗 [Models](https://huggingface.co/yyyang/FocusUI-3B), [dataset](https://huggingface.co/datasets/yyyang/FocusUI-Training-Data) and [benchmarks](https://huggingface.co/datasets/yyyang/UI-Grounding-Benchmarks) are available on HuggingFace.
 - [2025/12/29] Project page and code base released.
 
 ## Quick Start 🚀
@@ -160,9 +160,9 @@ python -m evaluation.os_world_g_eval \
 
 | Model | Backbone | Parameters | HuggingFace |
 |-------|----------|------------|-------------|
-| FocusUI-3B | Qwen2.5-VL-3B | 3B | [https://huggingface.co/yyyang/FocusUI-3B](https://huggingface.co/yyyang/FocusUI-3B) |
-| FocusUI-7B | Qwen2.5-VL-7B | 7B | [https://huggingface.co/yyyang/FocusUI-7B](https://huggingface.co/yyyang/FocusUI-7B) |
-| FocusUI-2B | Qwen3-VL-2B | 2B | [https://huggingface.co/yyyang/FocusUI-Qwen3-VL-2B](https://huggingface.co/yyyang/FocusUI-Qwen3-VL-2B) |
+| FocusUI-3B | Qwen2.5-VL-3B | 3B | [FocusUI-3B](https://huggingface.co/yyyang/FocusUI-3B) |
+| FocusUI-7B | Qwen2.5-VL-7B | 7B | [FocusUI-7B](https://huggingface.co/yyyang/FocusUI-7B) |
+| FocusUI-2B | Qwen3-VL-2B | 2B | [FocusUI-Qwen3-VL-2B](https://huggingface.co/yyyang/FocusUI-Qwen3-VL-2B) |
 
 
 ## Citation 📝
