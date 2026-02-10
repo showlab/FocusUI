@@ -26,7 +26,7 @@ from focusui.inference import (
     ForceFollowTokensLogitsProcessor,
     inference_focusui_token_select,
 )
-from focusui.visualization_patch_scores import vis_ps_overlay
+from focusui.visualization import vis_patch_saliency_heatmap_overlay, draw_point, draw_bbox
 
 
 def load_model_and_inference(
@@ -39,8 +39,7 @@ def load_model_and_inference(
     """Load model, tokenizer, processor, grounding message, inference fn, logits processor, patch size.
 
     Supported model_type values:
-      - focusui_guiactor_3b_qwen25vl, focusui_guiactor_7b_qwen25vl
-      - focusui_2b_qwen3vl, focusui_4b_qwen3vl
+      - focusui_3b, focusui_7b, focusui_qwen3vl_2b, focusui_qwen3vl_4b
     Returns:
       (model, tokenizer, data_processor, grounding_system_message, inference_fn, logits_processor, image_patch_size)
     """
@@ -50,14 +49,14 @@ def load_model_and_inference(
 
     image_patch_size = 14
 
-    if model_type in ["focusui_guiactor_3b_qwen25vl", "focusui_guiactor_7b_qwen25vl"]:
+    if model_type in ["focusui_3b", "focusui_7b"]:
         from focusui.modeling_focusui_qwen25vl import (
             FocusUI_Qwen2_5_VLForConditionalGenerationWithPointer,
         )
 
         model = FocusUI_Qwen2_5_VLForConditionalGenerationWithPointer.from_pretrained(
             model_name_or_path,
-            torch_dtype=torch.bfloat16,
+            dtype=torch.bfloat16,
             device_map=device,
             attn_implementation="flash_attention_2",
         ).eval()
@@ -69,14 +68,14 @@ def load_model_and_inference(
         )
         image_patch_size = 14
 
-    elif model_type in ["focusui_2b_qwen3vl", "focusui_4b_qwen3vl"]:
+    elif model_type in ["focusui_qwen3vl_2b", "focusui_qwen3vl_4b"]:
         from focusui.modeling_focusui_qwen3vl import (
             FocusUI_Qwen3VLForConditionalGenerationWithPointer,
         )
 
         model = FocusUI_Qwen3VLForConditionalGenerationWithPointer.from_pretrained(
             model_name_or_path,
-            torch_dtype=torch.bfloat16,
+            dtype=torch.bfloat16,
             device_map=device,
             attn_implementation="flash_attention_2",
         ).eval()
@@ -122,8 +121,6 @@ def compute_mean(examples: List[Dict], key: str):
     return sum(ex.get(key, 0) for ex in examples) / len(examples)
 
 
-
-
 def normalize_bbox(bbox_x1y1x2y2: Sequence[Union[int, float]], img_width: Union[int, float], img_height: Union[int, float]) -> Tuple[float, float, float, float]:
     """Normalize a bbox in xyxy format to [0,1] and ensure x1<=x2, y1<=y2.
 
@@ -167,37 +164,25 @@ def do_boxes_overlap(box1, box2):
     return True
 
 
-def save_patch_overlay(
+def save_patch_saliency_heatmap_overlay(
     *,
     screenshot: object,
     pred: dict,
-    out_dir: str,
     save_name: str,
     image_patch_size: int,
-    overlays_saved: int,
-    num_overlay_samples: int,
+    out_dir: str = "./",
     alpha: float = 0.5,
     cmap_name: str = "jet",
-) -> int:
-    """Optionally save patch_score_pred overlay. Returns updated overlays_saved."""
-    if overlays_saved >= num_overlay_samples:
-        return overlays_saved
+) -> str:
+    """Optionally save patch_score_pred overlay. Returns save path."""
 
     patch_score_pred = pred.get("patch_score_pred", None)
     image_grid_thw = pred.get("image_grid_thw", None)
-    if patch_score_pred is None or image_grid_thw is None:
-        return overlays_saved
-
-    try:
-        _, h_grid, w_grid = map(int, image_grid_thw)
-    except Exception:
-        return overlays_saved
-
+    _, h_grid, w_grid = map(int, image_grid_thw)
     h_grid_half, w_grid_half = h_grid // 2, w_grid // 2
     out_h, out_w = h_grid * image_patch_size, w_grid * image_patch_size
 
-
-    overlay_img = vis_ps_overlay(
+    overlay_img = vis_patch_saliency_heatmap_overlay(
         screenshot_path=screenshot,
         ps_1d=patch_score_pred,
         h_grid_half=h_grid_half,
@@ -208,6 +193,7 @@ def save_patch_overlay(
         cmap_name=cmap_name,
     )
     os.makedirs(out_dir, exist_ok=True)
-    overlay_img.save(os.path.join(out_dir, save_name))
-    return overlays_saved + 1
+    save_path = os.path.join(out_dir, save_name)
+    overlay_img.save(save_path)
+    return save_path
 

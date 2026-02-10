@@ -3,20 +3,20 @@
 <hr>
 </div>
 
-**TL;DR:** Find a smart way to watch screenshot for VLM.
+**TL;DR**: FocusUI teaches VLMs where to look in UI screenshots.
 
 <p align="center">
   <a href="https://arxiv.org/abs/2601.03928">
     <img src="https://img.shields.io/badge/arXiv-Paper-red.svg" alt="arXiv">
+  </a>
+    <a href="https://showlab.github.io/FocusUI/">
+    <img src="https://img.shields.io/badge/Project-Page-green.svg" alt="Project Page">
   </a>
   <a href="https://huggingface.co/collections/">
     <img src="https://img.shields.io/badge/HuggingFace-Models-yellow.svg" alt="HuggingFace">
   </a>
   <a href="https://huggingface.co/datasets/">
     <img src="https://img.shields.io/badge/HuggingFace-Dataset-blue.svg" alt="Dataset">
-  </a>
-  <a href="https://showlab.github.io/FocusUI/">
-    <img src="https://img.shields.io/badge/Project-Page-green.svg" alt="Project Page">
   </a>
 </p>
 
@@ -45,6 +45,7 @@ Vision-Language Models (VLMs) have shown remarkable performance in UI grounding 
 
 ## Updates 📣
 
+- [2026/02/08] 🤗 [Models](), [dataset]() and [benchmarks]() are available on HuggingFace.
 - [2025/12/29] Project page and code base released.
 
 ## Quick Start 🚀
@@ -57,78 +58,48 @@ git clone https://github.com/showlab/FocusUI.git
 cd FocusUI
 
 # Install dependencies
+conda create -n focusui python=3.12 -y
+conda activate focusui
 pip install -r requirements.txt
 ```
 
-### Inference
-
-```python
-from focusui.modeling_focusui_qwen25vl import FocusUI_Qwen2_5_VLForConditionalGenerationWithPointer
-from transformers import AutoProcessor
-import torch
-
-# Load model and processor
-model_path = "path/to/focusui-7b"
-model = FocusUI_Qwen2_5_VLForConditionalGenerationWithPointer.from_pretrained(
-    model_path,
-    torch_dtype=torch.bfloat16,
-    device_map="cuda",
-    attn_implementation="flash_attention_2",
-).eval()
-processor = AutoProcessor.from_pretrained(model_path)
-
-# Prepare conversation
-conversation = [
-    {
-        "role": "system",
-        "content": [{"type": "text", "text": "You are a GUI agent..."}]
-    },
-    {
-        "role": "user",
-        "content": [
-            {"type": "image", "image": "screenshot.png"},
-            {"type": "text", "text": "Click on the search button"}
-        ]
-    }
-]
-
-# Configure visual token selection
-model.apply_visual_token_select = True
-model.visual_reduct_ratio = 0.5  # Keep 50% of visual tokens
-
-# Run inference
-from focusui.inference import inference_focusui_token_select
-result = inference_focusui_token_select(
-    conversation=conversation,
-    model=model,
-    tokenizer=processor.tokenizer,
-    data_processor=processor,
-    topk=3,
-)
-
-# Get predicted coordinates
-print(f"Top-k points: {result['topk_points']}")
+**To download checkpoints:**
+```sh
+# download FocusUI-3B
+hf download yyyang/focusui_3b_ft_final --repo-type model --local-dir ./checkpoints/focusui-3b
 ```
+
+**(Optional) To download benchmarks and training datasets:**
+```sh
+# download benchmarks
+hf download yyyang/UI-Grounding-Benchmarks --repo-type dataset --local-dir ./datasets/UI-Grounding-Benchmarks/
+
+# download training datasets
+hf download yyyang/FocusUI-Training-Data --repo-type dataset --local-dir ./datasets/FocusUI-Training-Data/
+```
+
+
+### Quick Start: Inference with FocusUI
+
+See `inference_focusui.py` for an example of how to use FocusUI for inference. 
 
 ## Training 🧠
 
 FocusUI uses a two-stage training process:
 
-### Stage 1: Train Patch Scorer Only
+**Stage 1: Train Patch Scorer Only.**
+This stage trains only the PatchScorer module while freezing the base VLM.
 
 ```bash
 bash scripts/train/stage_1_ft_focusui_scorer.sh
 ```
 
-This stage trains only the PatchScorer module while freezing the base VLM.
-
-### Stage 2: Full Fine-tuning
+**Stage 2: Full Fine-tuning.** This stage fine-tunes the entire model with the trained PatchScorer.
 
 ```bash
 bash scripts/train/stage_2_ft_focusui.sh
 ```
 
-This stage fine-tunes the entire model with the trained PatchScorer.
 
 ## Evaluation 📊
 
@@ -137,28 +108,45 @@ Run evaluation on grounding benchmarks:
 ```bash
 # ScreenSpot-Pro
 python -m evaluation.ss_pro_eval \
-    --model_name_or_path path/to/focusui-7b \
-    --data_path ./dataset/ScreenSpot-Pro \
+    --model_type focusui_3b \
+    --model_name_or_path checkpoints/FocusUI-3B \
+    --data_path ./datasets/UI-Grounding-Benchmarks/ScreenSpot-Pro \
     --save_path ./results/ss_pro \
     --visual_reduct_ratio 0.5
 
 # ScreenSpot-V2
 python -m evaluation.ss_v2_eval \
-    --model_name_or_path path/to/focusui-7b \
-    --data_path ./dataset/ScreenSpot-v2_HF \
-    --save_path ./results/ss_v2
+    --model_type focusui_3b \
+    --model_name_or_path checkpoints/FocusUI-3B \
+    --data_path ./datasets/UI-Grounding-Benchmarks/ScreenSpot-V2 \
+    --save_path ./results/ss_v2 \
+    --visual_reduct_ratio 0.5
+
+# ScreenSpot-V2
+python -m evaluation.ss_v2_eval \
+    --model_type focusui_qwen3vl_2b \
+    --model_name_or_path checkpoints/FocusUI-Qwen3-VL-2B \
+    --data_path ./datasets/UI-Grounding-Benchmarks/ScreenSpot-V2 \
+    --save_path ./results/ss_v2_2b \ 
+    --visual_reduct_ratio 0.5
 
 # UI-Vision
 python -m evaluation.ui_vision_eval \
-    --model_name_or_path path/to/focusui-7b \
-    --data_path ./dataset/ui_benchmarks/ui-vision \
-    --save_path ./results/ui_vision
+    --model_type focusui_3b \
+    --model_name_or_path checkpoints/FocusUI-3B \
+    --data_path ./datasets/UI-Grounding-Benchmarks/UI-Vision \
+    --save_path ./results/ui_vision \
+    --visual_reduct_ratio 0.5
+
 
 # OSWorld-G
 python -m evaluation.os_world_g_eval \
-    --model_name_or_path path/to/focusui-7b \
-    --data_path ./dataset/OSWorld-G_HF \
-    --save_path ./results/osworld_g
+    --model_type focusui_3b \
+    --model_name_or_path checkpoints/FocusUI-3B \
+    --data_path ./datasets/UI-Grounding-Benchmarks/OSWorld-G \
+    --save_path ./results/osworld_g \
+    --visual_reduct_ratio 0.5
+
 ```
 
 **Key Evaluation Options**
@@ -172,10 +160,9 @@ python -m evaluation.os_world_g_eval \
 
 | Model | Backbone | Parameters | HuggingFace |
 |-------|----------|------------|-------------|
-| FocusUI-3B | Qwen2.5-VL-3B | 3B | [Coming Soon] |
-| FocusUI-7B | Qwen2.5-VL-7B | 7B | [Coming Soon] |
-| FocusUI-2B | Qwen3-VL-2B | 2B | [Coming Soon] |
-
+| FocusUI-3B | Qwen2.5-VL-3B | 3B | [https://huggingface.co/yyyang/FocusUI-3B](https://huggingface.co/yyyang/FocusUI-3B) |
+| FocusUI-7B | Qwen2.5-VL-7B | 7B | [https://huggingface.co/yyyang/FocusUI-7B](https://huggingface.co/yyyang/FocusUI-7B) |
+| FocusUI-2B | Qwen3-VL-2B | 2B | [https://huggingface.co/yyyang/FocusUI-Qwen3-VL-2B](https://huggingface.co/yyyang/FocusUI-Qwen3-VL-2B) |
 
 
 ## Citation 📝

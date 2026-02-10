@@ -12,8 +12,8 @@ from transformers.utils import (
     is_torchdynamo_compiling,
 )
 from transformers.cache_utils import Cache, StaticCache
+from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import Qwen2_5_VLCausalLMOutputWithPast, Qwen2_5_VLForConditionalGeneration
 
-from focusui.base_models.qwen2_5_vl.modeling_qwen2_5_vl import Qwen2_5_VLCausalLMOutputWithPast, Qwen2_5_VLForConditionalGeneration
 from focusui.trainer import rank0_print
 from focusui.modeling_patch_scorer import PatchScorerConfig, PatchScorerModel
 
@@ -878,7 +878,7 @@ class FocusUI_Qwen2_5_VLForConditionalGenerationWithPointer(Qwen2_5_VLForConditi
 
             # Step 5: Stack results into batched tensors
             selected_positions_list = [r["selected_positions"] for r in sample_results]
-            image_token_keep_mask = [r["image_token_keep_mask"] for r in sample_results]
+            image_token_keep_mask = torch.stack([r["image_token_keep_mask"] for r in sample_results])
             token_keep_mask = torch.stack([r["final_keep_mask"] for r in sample_results], dim=0)
 
             if input_ids is not None:

@@ -1,0 +1,6 @@
+# example data config for mock training
+
+datasets:
+  - json_path: datasets/Example-Data/example.json
+    images_folder: datasets/Example-Data/images
+    sampling_strategy: "all"

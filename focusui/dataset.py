@@ -189,7 +189,7 @@ def process_vision_info_w_factor(
     video_sample_fps_list = []
     for vision_info in vision_infos:
         if "image" in vision_info or "image_url" in vision_info:
-            image_inputs.append(fetch_image(vision_info, size_factor=image_factor))
+            image_inputs.append(fetch_image(vision_info, image_patch_size=image_factor))
         elif "video" in vision_info:
             video_input, video_sample_fps = fetch_video(vision_info, return_video_sample_fps=True)
             video_sample_fps_list.append(video_sample_fps)

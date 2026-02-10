@@ -244,11 +244,5 @@ pyrightconfig.json
 
 *.pt
 wandb/
-analysis/
-discussion/
-data/*_test.yaml
-
-results/*
-checkpoints/*
-eval_results/*
-patch_score_visualize/*
+checkpoints/*/*
+datasets/UI-Grounding-Benchmarks/

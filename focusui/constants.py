@@ -11,6 +11,30 @@ DEFAULT_POINTER_END_TOKEN = "<|pointer_end|>"
 DEFAULT_POINTER_PAD_TOKEN = "<|pointer_pad|>"
 DEFAULT_IMAGE_DROP_END_TOKEN = "<|image_drop_end|>"
 
+# Special Tokens
+ADDITIONAL_SPECIAL_TOKENS = [
+    "<|recipient|>",
+    "<|diff_marker|>",
+    DEFAULT_POINTER_START_TOKEN,
+    DEFAULT_POINTER_END_TOKEN,
+    DEFAULT_POINTER_PAD_TOKEN,
+]
+
+# Special Tokens for image drop
+ADDITIONAL_SPECIAL_TOKENS_IMAGE_DROP = [
+    DEFAULT_IMAGE_DROP_END_TOKEN,
+]
+
+# Action Patterns to be replaced with special tokens
+ACTION_PATTENS_XY = [
+    r"x=([0-9.]+), y=([0-9.]+)",
+    r"from_coord=\[([0-9.]+), ([0-9.]+)\], to_coord=\[([0-9.]+), ([0-9.]+)\]",
+    r"\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*\)",  # qwen3vl: "(x, y)" with optional spaces
+]
+
+until = ["<|diff_marker|>"]
+
+
 # System Messages
 # qwen2vl
 grounding_system_message_guiactor_qwen2vl ="You are a GUI agent. You are given a task and a screenshot of the screen. You need to perform a series of pyautogui actions to complete the task."
@@ -48,26 +72,3 @@ assistant_template = "{% for message in messages %}{{'<|im_start|>' + message['r
 # Assistant Starter
 assistant_starter_guiactor = "<|im_start|>assistant<|recipient|>os\npyautogui.click(<|pointer_start|><|pointer_pad|><|pointer_end|>)"
 assistant_starter_guiactor_qwen3vl = "<|im_start|>assistant<|recipient|>os\n(<|pointer_start|><|pointer_pad|><|pointer_end|>)"
-
-# Special Tokens
-ADDITIONAL_SPECIAL_TOKENS = [
-    "<|recipient|>",
-    "<|diff_marker|>",
-    DEFAULT_POINTER_START_TOKEN,
-    DEFAULT_POINTER_END_TOKEN,
-    DEFAULT_POINTER_PAD_TOKEN,
-]
-
-# Special Tokens for image drop
-ADDITIONAL_SPECIAL_TOKENS_IMAGE_DROP = [
-    DEFAULT_IMAGE_DROP_END_TOKEN,
-]
-
-# Action Patterns to be replaced with special tokens
-ACTION_PATTENS_XY = [
-    r"x=([0-9.]+), y=([0-9.]+)",
-    r"from_coord=\[([0-9.]+), ([0-9.]+)\], to_coord=\[([0-9.]+), ([0-9.]+)\]",
-    r"\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*\)",  # qwen3vl: "(x, y)" with optional spaces
-]
-
-until = ["<|diff_marker|>"]

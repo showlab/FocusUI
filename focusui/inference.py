@@ -316,7 +316,6 @@ def inference_focusui_token_select(
         
         pointer_pad_mask = pointer_pad_mask.masked_select(keep_token_mask[0])
 
-
     # otherwise, get the coordinate from the action head
     if use_placeholder:
         decoder_hidden_states = results.hidden_states[0][-1][0] # n_all_input_tokens, hidden_size

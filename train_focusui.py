@@ -4,10 +4,6 @@ from typing import Dict, Optional, Sequence
 
 import os
 import json
-import sys
-import subprocess
-import numpy as np
-from pathlib import Path
 import torch
 import transformers
 from liger_kernel.transformers import apply_liger_kernel_to_qwen2_vl
@@ -41,9 +37,9 @@ local_rank = None
 
 @dataclass
 class ModelArguments:
-    model_name_or_path: Optional[str] = field(default="facebook/opt-125m")
+    model_name_or_path: Optional[str] = field(default="huggingface/Qwen2.5-VL-3B-Instruct")
     flash_attn_2_enabled: bool = field(default=True)
-    model_type: str = field(default="focusui_guiactor_3b_qwen25vl", metadata={"help": "model type: qwen2vl or qwen25vl"})
+    model_type: str = field(default="focusui_3b", metadata={"help": "model type: qwen2vl or qwen25vl"})
 
 
 @dataclass
@@ -53,8 +49,6 @@ class DataArguments:
     image_folder: Optional[str] = field(default=None)
     min_pixels: Optional[int] = field(default=3136) # 3136 = 2 * 2 * 28 * 28 = 56 * 56
     max_pixels: Optional[int] = field(default=5720064) # 5720064 = 7296 * 28 * 28 = 3192 * 1792
-    # max_pixels: Optional[int] = field(default=6144000) # 6144000 = 6000 * 32 * 32 
-    # max_pixels: Optional[int] = field(default=7471104) # 7471104 = 7296 * 32 * 32 
     max_conv_turns: Optional[int] = field(default=10) # 30 => 20 => 10
     shuffle: bool = field(default=True)
     grounding_system_message: str = field(default="qwen25vl", metadata={"help": "qwen25vl | qwen3vl"})
@@ -296,13 +290,13 @@ def train():
         # rank0_print(f"evaluation_args = {vars(evaluation_args)}\n\n")
 
     # set up model
-    if model_args.model_type in ["focusui_guiactor_3b_qwen25vl", "focusui_guiactor_7b_qwen25vl"]:
+    if model_args.model_type in ["focusui_3b", "focusui_7b"]:
         from focusui.modeling_focusui_qwen25vl import FocusUI_Qwen2_5_VLForConditionalGenerationWithPointer
         model = FocusUI_Qwen2_5_VLForConditionalGenerationWithPointer.from_pretrained(
             model_args.model_name_or_path,
             cache_dir=training_args.cache_dir,
             attn_implementation="flash_attention_2" if model_args.flash_attn_2_enabled else None,
-            torch_dtype=(torch.bfloat16 if training_args.bf16 else None),
+            dtype=(torch.bfloat16 if training_args.bf16 else None),
             low_cpu_mem_usage=False,
         )
         model.reset_focus_ui_options(
@@ -324,13 +318,13 @@ def train():
                 state_dict = {k.replace("module.", "", 1): v for k, v in state_dict.items()}
             model.patch_scorer.load_state_dict(state_dict, strict=False)
 
-    elif model_args.model_type in ["focusui_2b_qwen3vl", "focusui_4b_qwen3vl"]:
+    elif model_args.model_type in ["focusui_qwen3vl_2b", "focusui_qwen3vl_4b"]:
         from focusui.modeling_focusui_qwen3vl import FocusUI_Qwen3VLForConditionalGenerationWithPointer
         model = FocusUI_Qwen3VLForConditionalGenerationWithPointer.from_pretrained(
             model_args.model_name_or_path,
             cache_dir=training_args.cache_dir,
             attn_implementation="flash_attention_2" if model_args.flash_attn_2_enabled else None,
-            torch_dtype=(torch.bfloat16 if training_args.bf16 else None),
+            dtype=(torch.bfloat16 if training_args.bf16 else None),
             low_cpu_mem_usage=False,
         )
         model.reset_focus_ui_options(

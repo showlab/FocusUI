@@ -2,7 +2,7 @@ export WANDB_MODE="online"
 export WANDB_API_KEY=""
 export WANDB_PROJECT="FocusUI"
 
-model_type="focusui_guiactor_3b_qwen25vl"
+model_type="focusui_3b"
 llm_model="huggingface/Qwen2.5-VL-3B-Instruct"
 output_dir="checkpoints/${model_type}_ft_scorer"
 

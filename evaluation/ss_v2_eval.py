@@ -19,7 +19,7 @@ from evaluation.shared_grounding_eval import (
     format_cell,
     load_model_and_inference,
     normalize_bbox,
-    save_patch_overlay,
+    save_patch_saliency_heatmap_overlay,
 )
 
 # Default patch size (overridden by loader)
@@ -68,8 +68,7 @@ def evaluate(
 
     results = []
 
-    overlays_saved = 0
-    overlay_out_dir = os.path.join(args.save_path, "patch_overlays")
+    overlay_out_dir = os.path.join(args.save_path, "saliency_heatmaps")
     os.makedirs(overlay_out_dir, exist_ok=True)
 
     for idx, example in tqdm(enumerate(dataset), total=len(dataset)):
@@ -151,18 +150,17 @@ def evaluate(
             if do_boxes_overlap(pred_bbox, gt_bbox):
                 ele["overlap_topk"] = 1
 
-        # Optionally save patch_score_pred overlay for the first N samples
-        base_name = os.path.splitext(os.path.basename(ele.get("file_name", f"sample_{idx}")))[0]
-        save_name = f"overlay_ps_pred_ssv2_{base_name}.png"
-        overlays_saved = save_patch_overlay(
-            screenshot=example["image"],
-            pred=pred,
-            out_dir=overlay_out_dir,
-            save_name=save_name,
-            image_patch_size=IMAGE_PATCH_SIZE,
-            overlays_saved=overlays_saved,
-            num_overlay_samples=args.num_overlay_samples,
-        )
+        # Optionally save patch_saliency_heatmap_overlay
+        if args.save_saliency_heatmaps:
+            base_name = os.path.splitext(os.path.basename(ele.get("file_name", f"sample_{idx}")))[0]
+            save_name = f"overlay_ps_pred_ssv2_{base_name}.png"
+            overlays_saved = save_patch_saliency_heatmap_overlay(
+                screenshot=example["image"],
+                pred=pred,
+                out_dir=overlay_out_dir,
+                save_name=save_name,
+                image_patch_size=IMAGE_PATCH_SIZE,
+            )
 
         results.append(ele)
 
@@ -271,10 +269,10 @@ python eval/screenSpot_v2_tokenselect.py --save_path <path_to_save_results>
 """
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_type", type=str, default="focusui_guiactor_3b_qwen25vl")
-    parser.add_argument("--model_name_or_path", type=str, default="checkpoints/focusui_guiactor_3b_qwen25vl")
+    parser.add_argument("--model_type", type=str, default="focusui_3b")
+    parser.add_argument("--model_name_or_path", type=str, default="checkpoints/focusui_3b")
     parser.add_argument("--save_path", type=str, default="./")
-    parser.add_argument("--data_path", type=str, default="./dataset/ScreenSpot-v2_HF")
+    parser.add_argument("--data_path", type=str, default="./dataset/ScreenSpot-V2")
     parser.add_argument("--topk", type=int, default=3, help="Topk")
     parser.add_argument(
         "--no-placeholder",
@@ -289,7 +287,7 @@ if __name__ == "__main__":
     parser.add_argument("--apply_visual_token_select", dest="apply_visual_token_select", action="store_true")
     parser.add_argument("--no-apply_visual_token_select", dest="apply_visual_token_select", action="store_false")
     parser.add_argument("--visual_reduct_ratio", type=float, default=0.5)
-    parser.add_argument("--num_overlay_samples", type=int, default=20)
+    parser.set_defaults(save_saliency_heatmaps=False)
     parser.set_defaults(apply_visual_token_select=True)
 
     args = parser.parse_args()
