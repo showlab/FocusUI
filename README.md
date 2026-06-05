@@ -5,20 +5,16 @@
  
 **TL;DR**: FocusUI teaches VLMs where to look in UI screenshots. 🔍
 
-<p align="center">
-  <a href="https://arxiv.org/abs/2601.03928">
-    <img src="https://img.shields.io/badge/arXiv-Paper-red.svg" alt="arXiv">
-  </a>
-    <a href="https://showlab.github.io/FocusUI/">
-    <img src="https://img.shields.io/badge/Project-Page-green.svg" alt="Project Page">
-  </a>
-  <a href="https://huggingface.co/collections/">
-    <img src="https://img.shields.io/badge/HuggingFace-Models-yellow.svg" alt="HuggingFace">
-  </a>
-  <a href="https://huggingface.co/datasets/">
-    <img src="https://img.shields.io/badge/HuggingFace-Dataset-blue.svg" alt="Dataset">
-  </a>
-</p>
+<div align="center">
+  <a href="https://arxiv.org/abs/2601.03928"><img src="https://img.shields.io/badge/arXiv-Paper-red.svg" alt="arXiv"></a>
+  <a href="https://showlab.github.io/FocusUI/"><img src="https://img.shields.io/badge/Project-Page-green.svg" alt="Project Page"></a>
+  <a href="https://huggingface.co/yyyang/FocusUI-3B"><img src="https://img.shields.io/badge/HuggingFace-Models-yellow.svg" alt="Model"></a>
+  <a href="https://huggingface.co/datasets/yyyang/FocusUI-Training-Data"><img src="https://img.shields.io/badge/HuggingFace-Datasets-yellow.svg" alt="Dataset"></a>
+  <a href="https://huggingface.co/datasets/yyyang/UI-Grounding-Benchmarks"><img src="https://img.shields.io/badge/HuggingFace-Benchmarks-yellow.svg" alt="Dataset"></a>
+</div>
+
+ 
+
 
 <p align="center">
   <b>Mingyu Ouyang</b><sup>1</sup>, <b>Kevin Qinghong Lin</b><sup>2</sup>, <b>Mike Zheng Shou</b><sup>1†</sup>, <b>Hwee Tou Ng</b><sup>1†</sup>
