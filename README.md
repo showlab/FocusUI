@@ -41,6 +41,8 @@ Vision-Language Models (VLMs) have shown remarkable performance in UI grounding 
 
 ## Updates 📣
 
+- [2026/06/07] FocusUI is reproduced by **[AutoSOTA](https://x.com/AutoSOTA11/status/2063497791234838567)**.
+- [2026/02/20] FocusUI is accepted by **CVPR 2026**.
 - [2026/02/08] 🤗 [Models](https://huggingface.co/yyyang/FocusUI-3B), [dataset](https://huggingface.co/datasets/yyyang/FocusUI-Training-Data) and [benchmarks](https://huggingface.co/datasets/yyyang/UI-Grounding-Benchmarks) are available on HuggingFace.
 - [2025/12/29] Project page and code base released.
 
